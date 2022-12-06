@@ -7,14 +7,9 @@ public class Day6
         Console.WriteLine();
         Console.WriteLine("Day6 Part1");
 
-        for (var i = 0; i < input.Length; i++)
-        {
-            if (input[i..(i + 4)].ToCharArray().Distinct().Count() == 4)
-            {
-                Console.WriteLine(i + 4);
-                break;
-            }
-        }
+        var numberOfValuesInSuccession = 4;
+
+        Console.WriteLine(Enumerable.Range(0, input.Length).First(i => input[i..(i + numberOfValuesInSuccession)].ToCharArray().Distinct().Count() == numberOfValuesInSuccession) + numberOfValuesInSuccession);
     }
 
     public static void Part2(string input)
@@ -22,14 +17,9 @@ public class Day6
         Console.WriteLine();
         Console.WriteLine("Day6 Part2");
 
-        for (var i = 0; i < input.Length; i++)
-        {
-            if (input[i..(i + 14)].ToCharArray().Distinct().Count() == 14)
-            {
-                Console.WriteLine(i + 14);
-                break;
-            }
-        }
+        var numberOfValuesInSuccession = 14;
+
+        Console.WriteLine(Enumerable.Range(0, input.Length).First(i => input[i..(i + numberOfValuesInSuccession)].ToCharArray().Distinct().Count() == numberOfValuesInSuccession) + numberOfValuesInSuccession);
     }
 
     public static string TestInput = "";
