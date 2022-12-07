@@ -18,8 +18,8 @@ Day5.Part2(Day5.Input);
 Day6.Part1(Day6.Input);
 Day6.Part2(Day6.Input);
 
-//Day7.Part1(Day7.Input);
-//Day7.Part2(Day7.Input);
+Day7.Part1(Day7.Input);
+Day7.Part2(Day7.Input);
 
 //Day8.Part1(Day8.Input);
 //Day8.Part2(Day8.Input);
