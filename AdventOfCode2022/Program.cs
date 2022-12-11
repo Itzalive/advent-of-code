@@ -24,14 +24,14 @@
 //Day8.Part1(Day8.Input);
 //Day8.Part2(Day8.Input);
 
-Day9.Part1(Day9.Input);
-Day9.Part2(Day9.Input);
+//Day9.Part1(Day9.Input);
+//Day9.Part2(Day9.Input);
 
 //Day10.Part1(Day10.Input);
 //Day10.Part2(Day10.Input);
 
 //Day11.Part1(Day11.Input);
-//Day11.Part2(Day11.TestInput);
+Day11.Part2(Day11.Input);
 
 //Day12.Part1(Day12.Input);
 //Day12.Part2(Day12.Input);
