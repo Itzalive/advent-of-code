@@ -67,7 +67,7 @@ public class Day9
             rope.Add(new MutablePoint());
         }
 
-        var tailHistory = new HashSet<Point> {new(rope.Last().X, rope.Last().Y)};
+        var tailHistory = new HashSet<MutablePoint> {new(rope.Last().X, rope.Last().Y)};
         foreach (var line in inputs)
         {
             var xDir = 0;
@@ -100,29 +100,29 @@ public class Day9
                         rope[i].X += Math.Clamp(rope[i - 1].X - rope[i].X, -1, 1);
                         rope[i].Y += Math.Clamp(rope[i - 1].Y - rope[i].Y, -1, 1);
                         if (i == rope.Count - 1)
-                            tailHistory.Add(new Point(rope[i].X, rope[i].Y));
+                            tailHistory.Add(new MutablePoint(rope[i].X, rope[i].Y));
                     }
                 //PrintRope(rope, 6);
             }
         }
 
-        for (var y = 60; y > -60; y--)
-        {
-            for (var x = -60; x < 60; x++)
-            {
-                var display = ".";
-                if (tailHistory.Any(t => t.X == x && t.Y == y))
-                {
-                    display = "#";
-                }
+        //for (var y = 60; y > -60; y--)
+        //{
+        //    for (var x = -60; x < 60; x++)
+        //    {
+        //        var display = ".";
+        //        if (tailHistory.Any(t => t.X == x && t.Y == y))
+        //        {
+        //            display = "#";
+        //        }
 
-                Console.Write(display);
-            }
+        //        Console.Write(display);
+        //    }
 
-            Console.WriteLine();
-        }
+        //    Console.WriteLine();
+        //}
 
-        Console.WriteLine();
+        //Console.WriteLine();
 
         Console.WriteLine(tailHistory.Count);
     }
@@ -150,7 +150,7 @@ public class Day9
         Console.WriteLine();
     }
 
-    public class MutablePoint
+    public record MutablePoint
     {
         public int X { get; set; }
 
