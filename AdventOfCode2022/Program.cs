@@ -1,76 +1,106 @@
-﻿using AdventOfCode2022;
+﻿using System.CommandLine;
+using System.Net;
 
-//Day1.Part1(Day1.Input);
-//Day1.Part2(Day1.Input);
+namespace AdventOfCode2022;
 
-//Day2.Part1(Day2.Input);
-//Day2.Part2(Day2.Input);
+public class Program
+{
+    public static async Task<int> Main(string[] args)
+    {
+        var yearOption = new Option<int>(new[] {"--year", "-y"}, () => DateTime.Now.Year, "Year");
+        var dayOption = new Option<int>(new[] {"--day", "-d"}, () => DateTime.Now.Day, "Day");
+        var partOption = new Option<int?>(new[] {"--part", "-p"}, "Part");
+        var rootCommand = new RootCommand("Advent of Code solver")
+        {
+            yearOption,
+            dayOption,
+            partOption
+        };
+        rootCommand.SetHandler(RunAdventOfCode, yearOption, dayOption, partOption);
 
-//Day3.Part1(Day3.Input);
-//Day3.Part2(Day3.Input);
+        return await rootCommand.InvokeAsync(args);
+    }
 
-//Day4.Part1(Day4.Input);
-//Day4.Part2(Day4.Input);
+    private static async Task RunAdventOfCode(int year, int day, int? part)
+    {
+        var type = typeof(IDay);
+        var days = AppDomain.CurrentDomain.GetAssemblies()
+            .SelectMany(s => s.GetTypes())
+            .Where(t => type.IsAssignableFrom(t) && !t.IsAbstract);
 
-//Day5.Part1(Day5.Input);
-//Day5.Part2(Day5.Input);
+        var daySolver = days.Select(d => (IDay) Activator.CreateInstance(d)!)
+            .SingleOrDefault(d => d.Year == year && d.Day == day);
 
-//Day6.Part1(Day6.Input);
-//Day6.Part2(Day6.Input);
+        Console.WriteLine($"Advent of Code {year} - Solving day {day}");
+        if (daySolver == null)
+        {
+            Console.WriteLine("Nothing found... why are you running me already?!");
+            return;
+        }
 
-//Day7.Part1(Day7.Input);
-//Day7.Part2(Day7.Input);
+        await EnsureInputLoadedAsync(daySolver);
+        var input = await LoadInputAsync(daySolver);
 
-//Day8.Part1(Day8.Input);
-//Day8.Part2(Day8.Input);
+        if (part is 1 or null)
+        {
+            if (!string.IsNullOrWhiteSpace(daySolver.TestInput))
+            {
+                Console.WriteLine("Part 1 Test");
+                var answerTest = daySolver.Part1(daySolver.TestInput);
+                Console.WriteLine($"Solution: {answerTest}");
+                Console.WriteLine();
+            }
 
-//Day9.Part1(Day9.Input);
-//Day9.Part2(Day9.Input);
 
-//Day10.Part1(Day10.Input);
-//Day10.Part2(Day10.Input);
+            Console.WriteLine("Part 1");
+            var answer = daySolver.Part1(input);
+            Console.WriteLine($"Solution: {answer}");
+        }
 
-//Day11.Part1(Day11.Input);
-//Day11.Part2(Day11.Input);
+        if (part == null)
+        {
+            Console.WriteLine();
+            Console.WriteLine();
+        }
 
-//Day12.Part1(Day12.Input);
-//Day12.Part2(Day12.Input);
+        if (part is 2 or null)
+        {
+            if (!string.IsNullOrWhiteSpace(daySolver.TestInput))
+            {
+                Console.WriteLine("Part 2 Test");
+                var answerTest = daySolver.Part2(daySolver.TestInput);
+                Console.WriteLine($"Solution: {answerTest}");
+                Console.WriteLine();
+            }
 
-Day13.Part1(Day13.Input);
-Day13.Part2(Day13.Input);
+            Console.WriteLine("Part 2");
+            var answer = daySolver.Part2(input);
+            Console.WriteLine($"Solution: {answer}");
+        }
+    }
 
-//Day14.Part1(Day14.Input);
-//Day14.Part2(Day14.Input);
+    private static async Task<string> LoadInputAsync(IDay day)
+    {
+        var inputPath = $"../../../{day.Year}/{day.Day:00}/input.txt";
+        return (await File.ReadAllTextAsync(inputPath)).Replace("\n", Environment.NewLine)
+            .Replace("\r\r\n", Environment.NewLine).Trim('\r', '\n', ' ');
+    }
 
-//Day15.Part1(Day15.Input);
-//Day15.Part2(Day15.Input);
-
-//Day16.Part1(Day16.Input);
-//Day16.Part2(Day16.Input);
-
-//Day17.Part1(Day17.Input);
-//Day17.Part2(Day17.Input);
-
-//Day18.Part1(Day18.Input);
-//Day18.Part2(Day18.Input);
-
-//Day19.Part1(Day19.Input);
-//Day19.Part2(Day19.Input);
-
-//Day20.Part1(Day20.Input);
-//Day20.Part2(Day20.Input);
-
-//Day21.Part1(Day21.Input);
-//Day21.Part2(Day21.Input);
-
-//Day22.Part1(Day22.Input);
-//Day22.Part2(Day22.Input);
-
-//Day23.Part1(Day23.Input);
-//Day23.Part2(Day23.Input);
-
-//Day24.Part1(Day24.Input);
-//Day24.Part2(Day24.Input);
-
-//Day25.Part1(Day25.Input);
-//Day25.Part2(Day25.Input);
+    private static async Task EnsureInputLoadedAsync(IDay day)
+    {
+        var inputPath = $"../../../{day.Year}/{day.Day:00}/input.txt";
+        if (!File.Exists(inputPath))
+        {
+            var cookieContainer = new CookieContainer();
+            var baseAddress = new Uri($"https://adventofcode.com");
+            cookieContainer.Add(baseAddress,
+                new Cookie("session",
+                    ""));
+            using var handler = new HttpClientHandler {CookieContainer = cookieContainer};
+            using var client = new HttpClient(handler) {BaseAddress = baseAddress};
+            var response = await client.GetAsync($"/{day.Year}/day/{day.Day}/input");
+            await using var fs = new FileStream(inputPath, FileMode.CreateNew);
+            await response.Content.CopyToAsync(fs);
+        }
+    }
+}
