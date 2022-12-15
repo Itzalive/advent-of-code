@@ -1,4 +1,5 @@
 ﻿using System.CommandLine;
+using System.Diagnostics;
 using System.Net;
 
 namespace AdventOfCode2022;
@@ -41,20 +42,27 @@ public class Program
         await EnsureInputLoadedAsync(daySolver);
         var input = await LoadInputAsync(daySolver);
 
+        var timer = new Stopwatch();
         if (part is 1 or null)
         {
             if (!string.IsNullOrWhiteSpace(daySolver.TestInput))
             {
                 Console.WriteLine("Part 1 Test");
+                timer.Restart();
                 var answerTest = daySolver.Part1(daySolver.TestInput);
+                timer.Stop();
                 Console.WriteLine($"Solution: {answerTest}");
+                Console.WriteLine($"Time taken: {timer.Elapsed}");
                 Console.WriteLine();
             }
 
 
             Console.WriteLine("Part 1");
+            timer.Restart();
             var answer = daySolver.Part1(input);
+            timer.Stop();
             Console.WriteLine($"Solution: {answer}");
+            Console.WriteLine($"Time taken: {timer.Elapsed}");
         }
 
         if (part == null)
@@ -68,14 +76,20 @@ public class Program
             if (!string.IsNullOrWhiteSpace(daySolver.TestInput))
             {
                 Console.WriteLine("Part 2 Test");
+                timer.Restart();
                 var answerTest = daySolver.Part2(daySolver.TestInput);
+                timer.Stop();
                 Console.WriteLine($"Solution: {answerTest}");
+                Console.WriteLine($"Time taken: {timer.Elapsed}");
                 Console.WriteLine();
             }
 
             Console.WriteLine("Part 2");
+            timer.Restart();
             var answer = daySolver.Part2(input);
+            timer.Stop();
             Console.WriteLine($"Solution: {answer}");
+            Console.WriteLine($"Time taken: {timer.Elapsed}");
         }
     }
 
