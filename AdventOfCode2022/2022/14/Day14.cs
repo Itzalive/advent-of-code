@@ -8,19 +8,20 @@ public class Day14 : IDay
     public string Part1(string input)
     {
         var inputs = input.Split(Environment.NewLine).ToArray();
-        var lines = inputs.Select(l => l.Split(" -> ").Select(p => p.Split(",").Select(int.Parse).ToArray()).ToArray()).ToArray();
+        var lines = inputs.Select(l => l.Split(" -> ").Select(p => p.Split(",").Select(int.Parse).ToArray()).ToArray())
+            .ToArray();
         var allPoints = lines.SelectMany(l => l).ToArray();
         var maxX = allPoints.Max(p => p[0]) + 1;
         var minX = allPoints.Min(p => p[0]) - 1;
         var maxY = allPoints.Max(p => p[1]) + 1;
         var minY = Math.Min(0, allPoints.Min(p => p[1]) - 1);
-        var map = new List<List<string>>();
+        var map = new List<List<char>>();
         for (var y = minY; y <= maxY; y++)
-        { 
-            var row = new List<string>();
+        {
+            var row = new List<char>();
             for (var x = minX; x <= maxX; x++)
             {
-                row.Add(".");
+                row.Add('.');
             }
 
             map.Add(row);
@@ -52,11 +53,11 @@ public class Day14 : IDay
         return sandCount.ToString();
     }
 
-    private bool DropSand(List<List<string>> map, int mapMinX, int mapMinY, int sandXSpawn, int sandYSpawn)
+    private bool DropSand(List<List<char>> map, int mapMinX, int mapMinY, int sandXSpawn, int sandYSpawn)
     {
         var sandPoint = new int[] {sandXSpawn - mapMinX, sandYSpawn - mapMinY};
 
-        if (map[sandPoint[1]][sandPoint[0]] == "o")
+        if (map[sandPoint[1]][sandPoint[0]] == 'o')
             return false;
 
         bool hasMoved;
@@ -65,16 +66,18 @@ public class Day14 : IDay
             hasMoved = false;
             if (sandPoint[1] == map.Count - 1)
                 return false;
-            if (map[sandPoint[1] + 1][sandPoint[0]] == ".")
+            if (map[sandPoint[1] + 1][sandPoint[0]] == '.')
             {
                 sandPoint[1] += 1;
                 hasMoved = true;
-            }else if (map[sandPoint[1] + 1][sandPoint[0] - 1] == ".")
+            }
+            else if (map[sandPoint[1] + 1][sandPoint[0] - 1] == '.')
             {
                 sandPoint[1] += 1;
                 sandPoint[0] -= 1;
                 hasMoved = true;
-            }else if (map[sandPoint[1] + 1][sandPoint[0] + 1] == ".")
+            }
+            else if (map[sandPoint[1] + 1][sandPoint[0] + 1] == '.')
             {
                 sandPoint[1] += 1;
                 sandPoint[0] += 1;
@@ -82,11 +85,11 @@ public class Day14 : IDay
             }
         } while (hasMoved);
 
-        map[sandPoint[1]][sandPoint[0]] = "o";
+        map[sandPoint[1]][sandPoint[0]] = 'o';
         return true;
     }
 
-    private void PrintMap(List<List<string>> map)
+    private void PrintMap(List<List<char>> map)
     {
         foreach (var row in map)
         {
@@ -94,7 +97,7 @@ public class Day14 : IDay
         }
     }
 
-    private void DrawLine(List<List<string>> map, int mapMinX, int mapMinY, int[] point, int[] point2)
+    private void DrawLine(List<List<char>> map, int mapMinX, int mapMinY, int[] point, int[] point2)
     {
         var minX = Math.Min(point[0], point2[0]);
         var maxX = Math.Max(point[0], point2[0]);
@@ -104,7 +107,7 @@ public class Day14 : IDay
         {
             for (var y = minY; y <= maxY; y++)
             {
-                map[y - mapMinY][x - mapMinX] = "#";
+                map[y - mapMinY][x - mapMinX] = '#';
             }
         }
     }
@@ -112,19 +115,20 @@ public class Day14 : IDay
     public string Part2(string input)
     {
         var inputs = input.Split(Environment.NewLine).ToArray();
-        var lines = inputs.Select(l => l.Split(" -> ").Select(p => p.Split(",").Select(int.Parse).ToArray()).ToArray()).ToArray();
+        var lines = inputs.Select(l => l.Split(" -> ").Select(p => p.Split(",").Select(int.Parse).ToArray()).ToArray())
+            .ToArray();
         var allPoints = lines.SelectMany(l => l).ToArray();
         var maxY = allPoints.Max(p => p[1]) + 2;
         var minY = Math.Min(0, allPoints.Min(p => p[1]) - 1);
-        var maxX = allPoints.Max(p => p[0]) + (maxY - minY) + 1;
-        var minX = allPoints.Min(p => p[0]) - (maxY - minY) - 1;
-        var map = new List<List<string>>();
+        var maxX = 500 + (maxY - minY);
+        var minX = 500 - (maxY - minY);
+        var map = new List<List<char>>();
         for (var y = minY; y <= maxY; y++)
-        { 
-            var row = new List<string>();
+        {
+            var row = new List<char>();
             for (var x = minX; x <= maxX; x++)
             {
-                row.Add(y == maxY ? "#" : ".");
+                row.Add(y == maxY ? '#' : '.');
             }
 
             map.Add(row);
@@ -137,7 +141,6 @@ public class Day14 : IDay
             {
                 var secondPoint = line[i];
                 DrawLine(map, minX, minY, firstPoint, secondPoint);
-
 
                 firstPoint = secondPoint;
             }
