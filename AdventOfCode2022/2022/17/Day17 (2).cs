@@ -303,7 +303,16 @@ public class Day17b : IDay
         var nextRock = 0;
         var nextWind = 0;
         var topOfTheRock = -1;
-        for (long i = 0; i < 1000000000000; i++)
+        long numRocks = 1000000000000;
+
+        int targetTowerTop = -1;
+        var targetNextRockIndex = -1;
+        var targetNextWindIndex = -1;
+        var cycleDistance = 10;
+        long cycleRocks = -1;
+        long testCycleStart = -1;
+
+        for (long i = 0; i < numRocks; i++)
         {
             // Place rock
             var rock = rocks[nextRock];
@@ -344,17 +353,70 @@ public class Day17b : IDay
 
             HardenRock(cave, topOfTheRock, rockHeight);
             topOfTheRock += Math.Max(movedDown - rockHeight, 0);
-            if (i % 10000000 == 0)
+            //if (i % 10000000 == 0)
+            //{
+            //    var memorySavedLines = MemorySave(cave, topOfTheRock);
+            //    removedLines += memorySavedLines;
+            //    topOfTheRock -= memorySavedLines;
+            //}
+
+            //if (i % 1000000 == 0)
+            //{
+            //    Console.WriteLine(DateTime.UtcNow.ToString("O") + " - " + i);
+            //}
+
+            if (topOfTheRock > 6000 && targetTowerTop == -1)
             {
-                var memorySavedLines = MemorySave(cave, topOfTheRock);
-                removedLines += memorySavedLines;
-                topOfTheRock -= memorySavedLines;
+                for (var d = cycleDistance + 1; d < topOfTheRock / 2; d++)
+                {
+                    var isMatch = true;
+                    for (var j = 0; j < d; j++)
+                    {
+                        for (var x = 0; x < 7; x++)
+                        {
+                            if(cave[topOfTheRock - j][x] == cave[topOfTheRock - d - j][x]) continue;
+                            isMatch = false;
+                            break;
+                        }
+                        if (!isMatch) break;
+                    }
+
+                    if (!isMatch) continue;
+
+                    Console.WriteLine($"{i} {d} {topOfTheRock}");
+                    Console.WriteLine($"{i} {nextRock} {nextWind}");
+                    targetTowerTop = topOfTheRock + d;
+                    targetNextRockIndex = nextRock;
+                    targetNextWindIndex = nextWind;
+                    testCycleStart = i;
+                    cycleDistance = d;
+                    break;
+                }
+                //Console.WriteLine(DateTime.UtcNow.ToString("O") + " - " + i);
+
             }
 
-            if (i % 1000000 == 0)
+            if (targetTowerTop != -1 && topOfTheRock >= targetTowerTop && cycleRocks == -1)
             {
-                Console.WriteLine(DateTime.UtcNow.ToString("O") + " - " + i);
+                Console.WriteLine($"{i} {nextRock} {nextWind}");
+
+                if (topOfTheRock == targetTowerTop && nextWind == targetNextWindIndex && nextRock == targetNextRockIndex)
+                {
+                    cycleRocks = i - testCycleStart;
+                    var remaining = numRocks - i - cycleDistance;
+                    var timesCycled = (long) Math.Floor(remaining / (double) cycleRocks);
+                    i += cycleRocks * timesCycled;
+                    removedLines += cycleDistance * timesCycled;
+
+                    Console.WriteLine($"{i} {nextRock} {nextWind}");
+                }
+                
+                if(topOfTheRock > targetTowerTop)
+                {
+                    targetTowerTop = -1;
+                }
             }
+
         }
 
         return (removedLines + cave.Count(l => l.Any(c => c != '.'))).ToString();
