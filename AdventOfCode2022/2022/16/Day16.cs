@@ -109,6 +109,16 @@ public class Day16 : IDay
                 regex.Groups[4].Captures.Select(c => c.Value));
         }).ToDictionary(v => v.Name);
 
+        //foreach (var valve in valves)
+        //{
+        //    Console.WriteLine(valve.Key);
+        //    foreach (var c in valve.Value.Connections)
+        //    {
+        //        if(String.Compare(valve.Key, c.Key, StringComparison.Ordinal) > 0)
+        //        Console.WriteLine($"{valve.Key} {c.Key}");
+        //    }
+        //}
+
         var addedConnection = false;
         do
         {
@@ -120,9 +130,16 @@ public class Day16 : IDay
                 {
                     foreach (var newC in valves[c.Key].Connections)
                     {
-                        if (v.Name != newC.Key && !v.Connections.ContainsKey(newC.Key))
+                        if (v.Name == newC.Key) continue;
+
+                        var distance = c.Value + newC.Value;
+                        if (!v.Connections.ContainsKey(newC.Key))
                         {
-                            v.Connections.Add(newC.Key, c.Value + newC.Value);
+                            v.Connections.Add(newC.Key, distance);
+                            addedConnection = true;
+                        }else if (v.Connections[newC.Key] > distance)
+                        {
+                            v.Connections[newC.Key] = distance;
                             addedConnection = true;
                         }
                     }
@@ -130,111 +147,92 @@ public class Day16 : IDay
             }
         } while (addedConnection);
 
+        valves["AA"].Connections.Add("AA", 0);
+
         foreach (var v in valves.Values)
         {
-            v.Connections = v.Connections.Where(c => valves[c.Key].FlowRate > 0).OrderBy(c => c.Value).ThenByDescending(c => valves[c.Key].FlowRate)
-                .ToDictionary(d => d.Key, d => d.Value);
+            v.Connections = v.Connections.Where(c => valves[c.Key].FlowRate > 0).ToDictionary(d => d.Key, d => d.Value);
         }
 
         bestBestScore = 0;
         var currentValve = "AA";
         var remainingTime = 26;
 
-        var bestScore = Go2(new List<string>(), new List<string>(), valves, new List<string>(), currentValve, currentValve, 0, 0, remainingTime,
-            valves.Select(v => v.Value.FlowRate).Sum(), 0);
+        var bestScore = await Go2v2(/*new List<string>(), new List<string>(),*/ valves, valves.Where(v => v.Value.FlowRate > 0).OrderByDescending(v => v.Value.FlowRate).ToDictionary(v => v.Key, v => v.Value.FlowRate), currentValve, currentValve, 0, 0, remainingTime, 0);
 
         return bestScore.ToString();
     }
 
-    private int Go2(List<string> meHistory, List<string> elephantHistory, IReadOnlyDictionary<string, Valve> valves, IReadOnlyList<string> openValves, string currentMeValve, string currentElephantValve, int remainingMeTravel, int remainingElephantTravel,  int remainingTime, int maxFlowRate, int currentScore)
-    {
-        if (remainingTime == 0)
-        {
-            if (currentScore > bestBestScore)
-            {
+    private async Task<int> Go2v2(/*List<string> meHistory, List<string> elephantHistory,*/ IReadOnlyDictionary<string, Valve> valves, IReadOnlyDictionary<string, int> remainingValves, string currentMeValve, string currentElephantValve, int remainingMeTravel, int remainingElephantTravel, int remainingTime, int currentScore) {
+        if (remainingTime <= 0 || !remainingValves.Any() || currentScore + remainingValves.Values.Sum() * (remainingTime - 1) <= bestBestScore) {
+            if (currentScore > bestBestScore) {
                 bestBestScore = currentScore;
-                
-                Console.WriteLine($"Score: {currentScore}");
-                //for (int i = 0; i < meHistory.Count; i++)
-                //{
+
+                //Console.WriteLine($"Score: {currentScore}");
+                //for (int i = 0; i < meHistory.Count; i++) {
                 //    Console.WriteLine($"{meHistory[i]} - {elephantHistory[i]}");
                 //}
                 //Console.WriteLine();
             }
             return currentScore;
         }
-        
-        var currentFlowRate = openValves.Select(o => valves[o].FlowRate).Sum();
-        
-        var bestScore = currentScore + remainingTime * currentFlowRate;
-        if (currentFlowRate == maxFlowRate || maxFlowRate * remainingTime + currentScore <= bestBestScore)
-        {
-            if (bestScore > bestBestScore)
+
+        var personNextMoves = new List<(string, int, bool)>();
+        var elephantNextMoves = new List<(string, int, bool)>();
+        if (remainingMeTravel == 0) {
+            var meValve = valves[currentMeValve];
+            personNextMoves.AddRange(remainingValves.Select(v => (v.Key, meValve.Connections[v.Key] + 1, true)));
+            if (remainingValves.Count == 1)
             {
-                bestBestScore = bestScore;
-                
-                Console.WriteLine($"Score: {bestScore}");
-                //for (int i = 0; i < meHistory.Count; i++)
-                //{
-                //    Console.WriteLine($"{meHistory[i]} - {elephantHistory[i]}");
-                //}
-                //Console.WriteLine();
+                personNextMoves.Add((currentMeValve, remainingTime, false));
             }
-            return bestScore;
+        }
+        else {
+            personNextMoves.Add((currentMeValve, remainingMeTravel, false));
         }
 
-        var personNextMoves = new List<(string, int)>();
-        var elephantNextMoves = new List<(string, int)>();
-        if (remainingMeTravel <= 0)
-        {
-            if (!openValves.Contains(currentMeValve) && valves[currentMeValve].FlowRate > 0)
-                personNextMoves.Add((currentMeValve, -1));
-            personNextMoves.AddRange(valves[currentMeValve].Connections.Where(c => c.Key != currentElephantValve && !openValves.Contains(c.Key)).Select(connection => (connection.Key, connection.Value - 1)));
-        }
-        else
-        {
-            personNextMoves.Add((currentMeValve, remainingMeTravel - 1));
-        }
-
-        if (personNextMoves.Count == 0)
-        {
-            personNextMoves.Add((currentMeValve, 0));
-        }
-
-        if (remainingElephantTravel <= 0)
-        {
-            if (currentElephantValve != currentMeValve && !openValves.Contains(currentElephantValve) && valves[currentElephantValve].FlowRate > 0)
-                elephantNextMoves.Add((currentElephantValve, -1));
-            elephantNextMoves.AddRange(valves[currentElephantValve].Connections.Where(c => c.Key != currentMeValve && !openValves.Contains(c.Key)).Select(connection => (connection.Key, connection.Value - 1)));
-        }
-        else
-        {
-            elephantNextMoves.Add((currentElephantValve, remainingElephantTravel - 1));
-        }
-
-        if (elephantNextMoves.Count == 0)
-        {
-            elephantNextMoves.Add((currentElephantValve, 0));
-        }
-
-        foreach (var personNextMove in personNextMoves)
-        {
-            foreach (var elephantNextMove in elephantNextMoves)
+        if (remainingElephantTravel == 0) {
+            var elephantValve = valves[currentElephantValve];
+            elephantNextMoves.AddRange(remainingValves.Select(v => (v.Key, elephantValve.Connections[v.Key] + 1, true)));
+            if (remainingValves.Count == 1)
             {
-                if (personNextMove.Item1 == elephantNextMove.Item1) continue;
+                elephantNextMoves.Add((currentElephantValve, remainingTime, false));
+            }
+        }
+        else {
+            elephantNextMoves.Add((currentElephantValve, remainingElephantTravel, false));
+        }
 
-                var open = new List<string>(openValves);
-                if (personNextMove.Item2 < 0)
-                    open.Add(personNextMove.Item1);
-                if(elephantNextMove.Item2 < 0)
-                    open.Add(elephantNextMove.Item1);
+        var bestScore = 0;
+        foreach (var personNextMove in personNextMoves) {
+            foreach (var elephantNextMove in elephantNextMoves) {
+                if(personNextMove.Item1 == elephantNextMove.Item1) continue;
+                
+                var newRemaining = remainingValves.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
-                var meNewHistory = new List<string>(meHistory) {$"{personNextMove.Item1}:{personNextMove.Item2}"};
-                var elephantNewHistory = new List<string>(elephantHistory) {$"{elephantNextMove.Item1}:{elephantNextMove.Item2}"};
+                var newScore = currentScore;
+                if (personNextMove.Item3)
+                {
+                    newRemaining.Remove(personNextMove.Item1);
+                    newScore += valves[personNextMove.Item1].FlowRate *
+                                Math.Max(0, remainingTime - personNextMove.Item2);
+                }
 
-                var score = Go2(meNewHistory, elephantNewHistory, valves, open, personNextMove.Item1,
-                    elephantNextMove.Item1, personNextMove.Item2,
-                    elephantNextMove.Item2, remainingTime - 1, maxFlowRate, currentScore + currentFlowRate);
+                if (elephantNextMove.Item3)
+                {
+                    newRemaining.Remove(elephantNextMove.Item1);
+                    newScore += valves[elephantNextMove.Item1].FlowRate *
+                                Math.Max(0, remainingTime - elephantNextMove.Item2);
+                }
+
+                //var meNewHistory = new List<string>(meHistory) {$"{personNextMove.Item1}:{personNextMove.Item2}"};
+                //var elephantNewHistory = new List<string>(elephantHistory) {$"{elephantNextMove.Item1}:{elephantNextMove.Item2}"};
+
+                var skipTime = Math.Min(personNextMove.Item2, elephantNextMove.Item2);
+
+                var score = await Go2v2(/*meNewHistory, elephantNewHistory,*/ valves, newRemaining, personNextMove.Item1,
+                    elephantNextMove.Item1, personNextMove.Item2 - skipTime,
+                    elephantNextMove.Item2 - skipTime, remainingTime - skipTime, newScore);
                 if (score > bestScore)
                     bestScore = score;
             }
