@@ -49,7 +49,7 @@ public class Program
             {
                 Console.WriteLine("Part 1 Test");
                 timer.Restart();
-                var answerTest = daySolver.Part1(daySolver.TestInput);
+                var answerTest = await daySolver.Part1(daySolver.TestInput);
                 timer.Stop();
                 Console.WriteLine($"Solution: {answerTest}");
                 Console.WriteLine($"Time taken: {timer.Elapsed}");
@@ -59,7 +59,7 @@ public class Program
 
             Console.WriteLine("Part 1");
             timer.Restart();
-            var answer = daySolver.Part1(input);
+            var answer = await daySolver.Part1(input);
             timer.Stop();
             Console.WriteLine($"Solution: {answer}");
             Console.WriteLine($"Time taken: {timer.Elapsed}");
@@ -77,7 +77,7 @@ public class Program
             {
                 Console.WriteLine("Part 2 Test");
                 timer.Restart();
-                var answerTest = daySolver.Part2(daySolver.TestInput);
+                var answerTest = await daySolver.Part2(daySolver.TestInput);
                 timer.Stop();
                 Console.WriteLine($"Solution: {answerTest}");
                 Console.WriteLine($"Time taken: {timer.Elapsed}");
@@ -86,7 +86,7 @@ public class Program
 
             Console.WriteLine("Part 2");
             timer.Restart();
-            var answer = daySolver.Part2(input);
+            var answer = await daySolver.Part2(input);
             timer.Stop();
             Console.WriteLine($"Solution: {answer}");
             Console.WriteLine($"Time taken: {timer.Elapsed}");

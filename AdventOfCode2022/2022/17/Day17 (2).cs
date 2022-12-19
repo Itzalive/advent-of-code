@@ -6,7 +6,7 @@ public class Day17b : IDay
 
     public int Day => 117;
 
-    public string Part1(string input)
+    public Task<string> Part1(string input)
     {
         var inputs = input.ToCharArray();
         var rocks = Rocks.Split(Environment.NewLine + Environment.NewLine)
@@ -73,7 +73,7 @@ public class Day17b : IDay
             //PrintCave(cave);
         }
 
-        return (removedLines + cave.Count(l => l.Any(c => c != '.'))).ToString();
+        return Task.FromResult((removedLines + cave.Count(l => l.Any(c => c != '.'))).ToString());
     }
 
     private static char GetNextWind(char[] inputs, ref int nextWind)
@@ -291,7 +291,7 @@ public class Day17b : IDay
     }
 
 
-    public string Part2(string input)
+    public Task<string> Part2(string input)
     {
         var inputs = input.ToCharArray();
         var rocks = Rocks.Split(Environment.NewLine + Environment.NewLine)
@@ -419,7 +419,7 @@ public class Day17b : IDay
 
         }
 
-        return (removedLines + cave.Count(l => l.Any(c => c != '.'))).ToString();
+        return Task.FromResult((removedLines + cave.Count(l => l.Any(c => c != '.'))).ToString());
     }
 
     public string? TestInput => ">>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>";

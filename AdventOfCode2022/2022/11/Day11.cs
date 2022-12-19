@@ -5,7 +5,7 @@ public class Day11 : IDay
     public int Year => 2022;
     public int Day => 11;
 
-    public string Part1(string input)
+    public Task<string> Part1(string input)
     {
         var monkies = Input;
         for (var n = 0; n < 20; n++)
@@ -31,10 +31,10 @@ public class Day11 : IDay
         }
 
         var seen = monkies.Select(m => m.ItemsSeen).OrderByDescending(e => e).ToArray();
-        return (seen[0] * seen[1]).ToString();
+        return Task.FromResult((seen[0] * seen[1]).ToString());
     }
 
-    public string Part2(string input)
+    public Task<string> Part2(string input)
     {
         var monkies = Input;
         for (var n = 0; n < 10000; n++)
@@ -54,7 +54,7 @@ public class Day11 : IDay
         }
 
         var seen = monkies.Select(m => m.ItemsSeen).OrderByDescending(e => e).ToArray();
-        return (seen[0] * seen[1]).ToString();
+        return Task.FromResult((seen[0] * seen[1]).ToString());
     }
 
     public string? TestInput => null;

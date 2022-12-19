@@ -5,7 +5,7 @@ internal class Day4 : IDay
     public int Year => 2022;
     public int Day => 4;
 
-    public string Part1(string input)
+    public async Task<string> Part1(string input)
     {
         var inputs = input.Split(Environment.NewLine).ToArray();
         var assignments = inputs
@@ -15,7 +15,7 @@ internal class Day4 : IDay
             .ToString();
     }
 
-    public string Part2(string input)
+    public async Task<string> Part2(string input)
     {
         var inputs = input.Split(Environment.NewLine).ToArray();
         var assignments = inputs

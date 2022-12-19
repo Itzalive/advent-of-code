@@ -9,7 +9,7 @@ public class Day15 : IDay
 
     public int Day => 15;
 
-    public string Part1(string input)
+    public Task<string> Part1(string input)
     {
         var inputs = input.Split(Environment.NewLine).ToArray();
         var scoreLineY = int.Parse(inputs[0]);
@@ -55,7 +55,7 @@ public class Day15 : IDay
                 Math.Abs(sensedBeacon.Item2.Y - sensedBeacon.Item1.Y));
         }
 
-        return scoreLine.Count(c => c == '#').ToString();
+        return Task.FromResult(scoreLine.Count(c => c == '#').ToString());
     }
 
     private void FillManhattanDistance(List<char> scoreLine, int scoreLineY, Point point, int distance)
@@ -97,7 +97,7 @@ public class Day15 : IDay
     }
 
 
-    public string Part2(string input)
+    public async Task<string> Part2(string input)
     {
         var inputs = input.Split(Environment.NewLine).ToArray();
         var maxDimension = int.Parse(inputs[1]);

@@ -5,7 +5,7 @@ public class Day14 : IDay
     public int Year => 2022;
     public int Day => 14;
 
-    public string Part1(string input)
+    public Task<string> Part1(string input)
     {
         var inputs = input.Split(Environment.NewLine).ToArray();
         var lines = inputs.Select(l => l.Split(" -> ").Select(p => p.Split(",").Select(int.Parse).ToArray()).ToArray())
@@ -50,7 +50,7 @@ public class Day14 : IDay
 
         Console.WriteLine();
         PrintMap(map);
-        return sandCount.ToString();
+        return Task.FromResult(sandCount.ToString());
     }
 
     private bool DropSand(List<List<char>> map, int mapMinX, int mapMinY, int sandXSpawn, int sandYSpawn)
@@ -112,7 +112,7 @@ public class Day14 : IDay
         }
     }
 
-    public string Part2(string input)
+    public Task<string> Part2(string input)
     {
         var inputs = input.Split(Environment.NewLine).ToArray();
         var lines = inputs.Select(l => l.Split(" -> ").Select(p => p.Split(",").Select(int.Parse).ToArray()).ToArray())
@@ -156,7 +156,7 @@ public class Day14 : IDay
 
         Console.WriteLine();
         PrintMap(map);
-        return sandCount.ToString();
+        return Task.FromResult(sandCount.ToString());
     }
 
     public string TestInput => @"498,4 -> 498,6 -> 496,6

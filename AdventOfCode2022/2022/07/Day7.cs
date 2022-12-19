@@ -5,20 +5,20 @@ public class Day7 : IDay
     public int Year => 2022;
     public int Day => 7;
 
-    public string Part1(string input)
+    public Task<string> Part1(string input)
     {
         var topLevelDirectory = ReadTreeStructure(input);
 
         var directories = topLevelDirectory.GetDirectoriesLessThan(100000);
-        return directories.Sum(d => d.Size).ToString();
+        return Task.FromResult(directories.Sum(d => d.Size).ToString());
     }
 
-    public string Part2(string input)
+    public Task<string> Part2(string input)
     {
         var topLevelDirectory = ReadTreeStructure(input);
 
         var targetSize = 30000000 - (70000000 - topLevelDirectory.Size);
-        return topLevelDirectory.FindBestDirectory(targetSize, topLevelDirectory).Size.ToString();
+        return Task.FromResult(topLevelDirectory.FindBestDirectory(targetSize, topLevelDirectory).Size.ToString());
     }
 
     private static Directory ReadTreeStructure(string input)

@@ -6,17 +6,17 @@ public class Day0 : IDay
 
     public int Day => 0;
 
-    public string Part1(string input)
+    public Task<string> Part1(string input)
     {
         var inputs = input.Split(Environment.NewLine).ToArray();
-        return "";
+        return Task.FromResult("");
     }
 
     
-    public string Part2(string input)
+    public Task<string> Part2(string input)
     {
         var inputs = input.Split(Environment.NewLine).ToArray();
-        return "";
+        return Task.FromResult("");
     }
 
     public string? TestInput => null;

@@ -5,7 +5,7 @@ public class Day10 : IDay
     public int Year => 2022;
     public int Day => 10;
 
-    public string Part1(string input)
+    public Task<string> Part1(string input)
     {
         var inputs = input.Split(Environment.NewLine).ToArray();
         var cycle = 0;
@@ -36,10 +36,10 @@ public class Day10 : IDay
             xReg += xDiff;
         }
 
-        return score.ToString();
+        return Task.FromResult(score.ToString());
     }
 
-    public string Part2(string input)
+    public Task<string> Part2(string input)
     {
         var inputs = input.Split(Environment.NewLine).ToArray();
         var xReg = 1;
@@ -63,7 +63,7 @@ public class Day10 : IDay
             xReg += xDiff;
         }
 
-        return result;
+        return Task.FromResult(result);
     }
 
     private static int position = 0;

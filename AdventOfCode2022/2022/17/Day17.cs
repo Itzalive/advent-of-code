@@ -10,13 +10,13 @@ public class Day17 : IDay
     
     const int xLength = 7;
 
-    public string Part1(string input)
+    public Task<string> Part1(string input)
     {
-        return DropRocks(input, 2022);
+        return Task.FromResult(DropRocks(input, 2022));
     }
-    public string Part2(string input)
+    public Task<string> Part2(string input)
     {
-        return DropRocks(input, 1000000000000);
+        return Task.FromResult(DropRocks(input, 1000000000000));
     }
 
     private string DropRocks(string windDirections, long numRocks)
