@@ -15,13 +15,9 @@ public class Day20 : IDay
         {
             list.Add(new InitialState {Value = int.Parse(inputs[i]), OriginalPosition = i});
         }
-        
-        //Console.WriteLine(string.Join(", ", list.Select(l => l.Value)));
-       
+
         MixList(list, input.Length < 100);
 
-        //Console.WriteLine(string.Join(", ", list.Select(l => l.Value)));
-        
         var zeroIndex = list.IndexOf(list.Single(i => i.Value == 0));
         var onethou = list[(zeroIndex + 1000) % list.Count].Value;
         var twothou = list[(zeroIndex + 2000) % list.Count].Value;
