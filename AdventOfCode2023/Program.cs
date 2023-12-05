@@ -1,5 +1,6 @@
 ﻿using System.CommandLine;
 using System.Diagnostics;
+using System.Management;
 using System.Net;
 
 namespace AdventOfCode2023;
@@ -19,7 +20,11 @@ public class Program
         };
         rootCommand.SetHandler(RunAdventOfCode, yearOption, dayOption, partOption);
 
-        return await rootCommand.InvokeAsync(args);
+        var result = await rootCommand.InvokeAsync(args);
+
+        OutputRuntimeInformation();
+
+        return result;
     }
 
     private static async Task RunAdventOfCode(int year, int day, int? part)
@@ -115,6 +120,26 @@ public class Program
             var response = await client.GetAsync($"/{day.Year}/day/{day.Day}/input");
             await using var fs = new FileStream(inputPath, FileMode.CreateNew);
             await response.Content.CopyToAsync(fs);
+        }
+    }
+
+    private static void OutputRuntimeInformation()
+    {
+        Console.WriteLine();
+        Console.WriteLine(".Net: {0}", Environment.Version.ToString());
+        var searcher = new ManagementObjectSearcher();
+        searcher.Query = new SelectQuery("SELECT * FROM Win32_Processor");
+        foreach (var mObject in searcher.Get())
+        {
+            Console.WriteLine("CPU: {0}", mObject["Name"]);
+        }
+
+        searcher.Query = new SelectQuery("Select * From Win32_ComputerSystem");
+        foreach (var mObject in searcher.Get())
+        {
+            var ramBytes = (Convert.ToDouble(mObject["TotalPhysicalMemory"]));
+            Console.WriteLine("RAM Size in Bytes: {0}", ramBytes);
+            Console.WriteLine("RAM Size in Giga Bytes: {0}", ramBytes / 1073741824);
         }
     }
 }
