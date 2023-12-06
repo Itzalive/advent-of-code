@@ -2,16 +2,32 @@
 using System.Diagnostics;
 using System.Management;
 using System.Net;
+using System.Text.RegularExpressions;
 
 namespace AdventOfCode2023;
 
 public class Program
 {
+    private static readonly HttpClientHandler HttpHandler;
+    private static readonly HttpClient HttpClient;
+
+    static Program()
+    {
+        var cookieContainer = new CookieContainer();
+        var baseAddress = new Uri($"https://adventofcode.com");
+        cookieContainer.Add(baseAddress,
+            new Cookie("session",
+                "***REMOVED***"));
+        HttpHandler = new HttpClientHandler();
+        HttpHandler.CookieContainer = cookieContainer;
+        HttpClient = new HttpClient(HttpHandler) { BaseAddress = baseAddress };
+    }
+
     public static async Task<int> Main(string[] args)
     {
-        var yearOption = new Option<int>(new[] {"--year", "-y"}, () => DateTime.Now.Year, "Year");
-        var dayOption = new Option<int>(new[] {"--day", "-d"}, () => DateTime.Now.Day, "Day");
-        var partOption = new Option<int?>(new[] {"--part", "-p"}, "Part");
+        var yearOption = new Option<int>(new[] { "--year", "-y" }, () => DateTime.Now.Year, "Year");
+        var dayOption = new Option<int>(new[] { "--day", "-d" }, () => DateTime.Now.Day, "Day");
+        var partOption = new Option<int?>(new[] { "--part", "-p" }, "Part");
         var rootCommand = new RootCommand("Advent of Code solver")
         {
             yearOption,
@@ -34,7 +50,7 @@ public class Program
             .SelectMany(s => s.GetTypes())
             .Where(t => type.IsAssignableFrom(t) && !t.IsAbstract);
 
-        var daySolver = days.Select(d => (IDay) Activator.CreateInstance(d)!)
+        var daySolver = days.Select(d => (IDay)Activator.CreateInstance(d)!)
             .SingleOrDefault(d => d.Year == year && d.Day == day);
 
         Console.WriteLine($"Advent of Code {year} - Solving day {day}");
@@ -44,12 +60,15 @@ public class Program
             return;
         }
 
+        part ??= await GetCurrentPart(daySolver);
+
         await EnsureInputLoadedAsync(daySolver);
         var input = await LoadInputAsync(daySolver);
 
         var timer = new Stopwatch();
         if (part is 1 or null)
         {
+            var canSubmit = false;
             if (!string.IsNullOrWhiteSpace(daySolver.TestInput))
             {
                 Console.WriteLine("Part 1 Test");
@@ -59,13 +78,20 @@ public class Program
                 Console.WriteLine($"Solution: {answerTest}");
                 if (daySolver.Part1TestSolution != null)
                 {
-                    Console.WriteLine($"CORRECT");
+                    if (daySolver.Part1TestSolution == answerTest)
+                    {
+                        Console.WriteLine($"CORRECT");
+                        canSubmit = true;
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Try again! Aim for {daySolver.Part1TestSolution}");
+                    }
                 }
 
                 Console.WriteLine($"Time taken: {timer.Elapsed}");
                 Console.WriteLine();
             }
-
 
             Console.WriteLine("Part 1");
             timer.Restart();
@@ -73,6 +99,10 @@ public class Program
             timer.Stop();
             Console.WriteLine($"Solution: {answer}");
             Console.WriteLine($"Time taken: {timer.Elapsed}");
+            if (canSubmit && part == 1)
+            {
+                await SubmitAnswerAsync(daySolver, part.Value, answer);
+            }
         }
 
         if (part == null)
@@ -83,6 +113,7 @@ public class Program
 
         if (part is 2 or null)
         {
+            var canSubmit = false;
             if (!string.IsNullOrWhiteSpace(daySolver.TestInput))
             {
                 Console.WriteLine("Part 2 Test");
@@ -92,8 +123,17 @@ public class Program
                 Console.WriteLine($"Solution: {answerTest}");
                 if (daySolver.Part2TestSolution != null)
                 {
-                    Console.WriteLine($"CORRECT");
+                    if (daySolver.Part2TestSolution == answerTest)
+                    {
+                        Console.WriteLine($"CORRECT");
+                        canSubmit = true;
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Try again! Aim for {daySolver.Part2TestSolution}");
+                    }
                 }
+
                 Console.WriteLine($"Time taken: {timer.Elapsed}");
                 Console.WriteLine();
             }
@@ -104,6 +144,10 @@ public class Program
             timer.Stop();
             Console.WriteLine($"Solution: {answer}");
             Console.WriteLine($"Time taken: {timer.Elapsed}");
+            if (canSubmit && part == 2)
+            {
+                await SubmitAnswerAsync(daySolver, part.Value, answer);
+            }
         }
     }
 
@@ -119,17 +163,66 @@ public class Program
         var inputPath = $"../../../{day.Year}/{day.Day:00}/input.txt";
         if (!File.Exists(inputPath))
         {
-            var cookieContainer = new CookieContainer();
-            var baseAddress = new Uri($"https://adventofcode.com");
-            cookieContainer.Add(baseAddress,
-                new Cookie("session",
-                    "***REMOVED***"));
-            using var handler = new HttpClientHandler {CookieContainer = cookieContainer};
-            using var client = new HttpClient(handler) {BaseAddress = baseAddress};
-            var response = await client.GetAsync($"/{day.Year}/day/{day.Day}/input");
+            var response = await HttpClient.GetAsync($"/{day.Year}/day/{day.Day}/input");
             await using var fs = new FileStream(inputPath, FileMode.CreateNew);
             await response.Content.CopyToAsync(fs);
         }
+    }
+
+    private static async Task SubmitAnswerAsync(IDay day, int part, string answer)
+    {
+        var formContent = new FormUrlEncodedContent(new[]
+        {
+            new KeyValuePair<string, string>("level", part.ToString()), 
+            new KeyValuePair<string, string>("answer", answer) 
+        });
+        var response = await HttpClient.PostAsync($"/{day.Year}/day/{day.Day}/answer", formContent);
+        if (!response.IsSuccessStatusCode)
+        {
+            Console.WriteLine("Error on submission:" + response.StatusCode);
+        }
+        else
+        {
+            var content = await response.Content.ReadAsStringAsync();
+            var rightAnswer = Regex.Match(content, "That's the right answer!");
+            if (rightAnswer.Success)
+            {
+                Console.WriteLine("Yay! You got a star");
+                return;
+            }
+
+            var notRightAnswer = Regex.Match(content, "That's not the right answer");
+            if (notRightAnswer.Success)
+            {
+                Console.WriteLine("Not the right answer");
+                return;
+            }
+
+            var waitForSubmission = Regex.Match(content, "You have ([0-9]*)s left to wait");
+            if (waitForSubmission.Success)
+            {
+                Console.WriteLine($"Waiting to submit for {waitForSubmission.Groups[1].Value}s");
+                await Task.Delay(TimeSpan.FromSeconds(int.Parse(waitForSubmission.Groups[1].Value) + 1));
+                await SubmitAnswerAsync(day, part, answer);
+                return;
+            }
+
+            // not sure the outcome...
+            Console.WriteLine(content);
+        }
+    }
+
+    private static async Task<int?> GetCurrentPart(IDay day)
+    {
+        var response = await HttpClient.GetAsync($"/{day.Year}/day/{day.Day}");
+        var content = await response.Content.ReadAsStringAsync();
+        var hasHiddenLevel = Regex.Match(content, "<input type=\"hidden\" name=\"level\" value=\"(1|2)\"/>");
+        if (hasHiddenLevel.Success)
+        {
+            return int.Parse(hasHiddenLevel.Groups[1].Value);
+        }
+
+        return null;
     }
 
     private static void OutputRuntimeInformation()
