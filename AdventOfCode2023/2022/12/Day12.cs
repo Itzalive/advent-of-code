@@ -5,6 +5,8 @@ public class Day12 : IDay
     public int Year => 2022;
     public int Day => 12;
 
+    public string? Part1TestSolution => null;
+
     public Task<string> Part1(string input)
     {
         var inputs = input.Split(Environment.NewLine).ToArray();
@@ -90,6 +92,8 @@ public class Day12 : IDay
 
         return new PathResult {WasSuccess = bestPath != null, Path = bestPath ?? new List<Point>()};
     }
+
+    public string? Part2TestSolution => null;
 
     public Task<string> Part2(string input)
     {

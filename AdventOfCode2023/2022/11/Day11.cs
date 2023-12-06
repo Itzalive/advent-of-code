@@ -5,6 +5,8 @@ public class Day11 : IDay
     public int Year => 2022;
     public int Day => 11;
 
+    public string? Part1TestSolution => null;
+
     public Task<string> Part1(string input)
     {
         var monkies = Input;
@@ -33,6 +35,8 @@ public class Day11 : IDay
         var seen = monkies.Select(m => m.ItemsSeen).OrderByDescending(e => e).ToArray();
         return Task.FromResult((seen[0] * seen[1]).ToString());
     }
+
+    public string? Part2TestSolution => null;
 
     public Task<string> Part2(string input)
     {

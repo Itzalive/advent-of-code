@@ -8,6 +8,8 @@ public class Day24 : IDay
 
     public int Day => 24;
 
+    public string? Part1TestSolution => null;
+
     public Task<string> Part1(string input)
     {
         var inputs = input.Split(Environment.NewLine).ToArray();
@@ -169,7 +171,9 @@ public class Day24 : IDay
 
         private readonly Func<T, T, bool> _equalsFunction;
     }
-    
+
+    public string? Part2TestSolution => null;
+
     public Task<string> Part2(string input)
     {
         var inputs = input.Split(Environment.NewLine).ToArray();

@@ -8,6 +8,8 @@ public class Day16 : IDay
 
     public int Day => 16;
 
+    public string? Part1TestSolution => null;
+
     private Regex lineRegex =
         new("Valve ([A-Z]{2}) has flow rate=([0-9]*); tunnels? leads? to valves? (([A-Z]{2})(, )?)*");
 
@@ -97,6 +99,7 @@ public class Day16 : IDay
         return bestScore;
     }
 
+    public string? Part2TestSolution => null;
 
     public async Task<string> Part2(string input)
     {

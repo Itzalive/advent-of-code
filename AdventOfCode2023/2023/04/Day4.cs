@@ -20,6 +20,8 @@ internal class Day4 : IDay
         return score.ToString();
     }
 
+    public string? Part1TestSolution => "13";
+
     public async Task<string> Part2(string input)
     {
         var inputs = input.Split(Environment.NewLine).ToArray();
@@ -37,6 +39,8 @@ internal class Day4 : IDay
 
         return score.ToString();
     }
+
+    public string? Part2TestSolution => "30";
 
     public class Card
     {

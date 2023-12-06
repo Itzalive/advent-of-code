@@ -7,6 +7,8 @@ public class Day9 : IDay
     public int Year => 2022;
     public int Day => 9;
 
+    public string? Part1TestSolution => null;
+
     public Task<string> Part1(string input)
     {
         var inputs = input.Split(Environment.NewLine).ToArray();
@@ -53,6 +55,8 @@ public class Day9 : IDay
     {
         return Math.Sqrt(Math.Pow(head.X - tail.X, 2) + Math.Pow(head.Y - tail.Y, 2)) < 2;
     }
+
+    public string? Part2TestSolution => null;
 
     public Task<string> Part2(string input)
     {

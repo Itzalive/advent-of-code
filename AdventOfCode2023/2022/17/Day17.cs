@@ -8,10 +8,15 @@ public class Day17 : IDay
     
     const int xLength = 7;
 
+    public string? Part1TestSolution => null;
+
     public Task<string> Part1(string input)
     {
         return Task.FromResult(DropRocks(input, 2022));
     }
+
+    public string? Part2TestSolution => null;
+
     public Task<string> Part2(string input)
     {
         return Task.FromResult(DropRocks(input, 1000000000000));

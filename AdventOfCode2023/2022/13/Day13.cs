@@ -7,6 +7,8 @@ public class Day13 : IDay
     public int Year => 2022;
     public int Day => 13;
 
+    public string? Part1TestSolution => null;
+
     public async Task<string> Part1(string input)
     {
         var inputs = input.Split(Environment.NewLine + Environment.NewLine).ToArray();
@@ -61,6 +63,8 @@ public class Day13 : IDay
 
         return 0;
     }
+
+    public string? Part2TestSolution => null;
 
     public async Task<string> Part2(string input)
     {

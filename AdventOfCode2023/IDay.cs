@@ -6,7 +6,11 @@ internal interface IDay
 
     int Day { get; }
 
+    string? Part1TestSolution { get; }
+
     Task<string> Part1(string input);
+
+    string? Part2TestSolution { get; }
 
     Task<string> Part2(string input);
 

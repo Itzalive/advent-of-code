@@ -57,6 +57,11 @@ public class Program
                 var answerTest = await daySolver.Part1(daySolver.TestInput);
                 timer.Stop();
                 Console.WriteLine($"Solution: {answerTest}");
+                if (daySolver.Part1TestSolution != null)
+                {
+                    Console.WriteLine($"CORRECT");
+                }
+
                 Console.WriteLine($"Time taken: {timer.Elapsed}");
                 Console.WriteLine();
             }
@@ -85,6 +90,10 @@ public class Program
                 var answerTest = await daySolver.Part2(daySolver.TestInput);
                 timer.Stop();
                 Console.WriteLine($"Solution: {answerTest}");
+                if (daySolver.Part2TestSolution != null)
+                {
+                    Console.WriteLine($"CORRECT");
+                }
                 Console.WriteLine($"Time taken: {timer.Elapsed}");
                 Console.WriteLine();
             }

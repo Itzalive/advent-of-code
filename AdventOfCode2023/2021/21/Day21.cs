@@ -6,13 +6,16 @@ public class Day21 : IDay
 
     public int Day => 21;
 
+    public string? Part1TestSolution => null;
+
     public Task<string> Part1(string input)
     {
         var inputs = input.Split(Environment.NewLine).Select(l => l.Split(":")[1].Trim()).Select(int.Parse).ToArray();
         return Task.FromResult("");
     }
 
-    
+    public string? Part2TestSolution => null;
+
     public Task<string> Part2(string input)
     {
         var startingPositions = input.Split(Environment.NewLine).Select(l => l.Split(":")[1].Trim()).Select(int.Parse).ToArray();

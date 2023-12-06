@@ -6,12 +6,16 @@ internal class Day1 : IDay
 
     public int Day => 1;
 
+    public string? Part1TestSolution => null;
+
     public Task<string> Part1(string input)
     {
         var elves = input.Split(Environment.NewLine + Environment.NewLine);
         var topElf = elves.Select(e => e.Split(Environment.NewLine).Select(int.Parse).Sum()).Max();
         return Task.FromResult(topElf.ToString());
     }
+
+    public string? Part2TestSolution => null;
 
     public Task<string> Part2(string input)
     {

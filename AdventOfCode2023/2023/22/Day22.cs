@@ -6,21 +6,22 @@ public class Day22 : IDay
 
     public int Day => 22;
 
+    public string? Part1TestSolution => null;
+
     public Task<string> Part1(string input)
     {
-        var lines = input.Split(Environment.NewLine);
-        var score = 0;
-
-        return Task.FromResult(score.ToString());
+        var inputs = input.Split(Environment.NewLine).ToArray();
+        return Task.FromResult("");
     }
+
+    public string? Part2TestSolution => null;
+
 
     public Task<string> Part2(string input)
     {
-        var lines = input.Split(Environment.NewLine);
-        var score = 0;
-
-        return Task.FromResult(score.ToString());
+        var inputs = input.Split(Environment.NewLine).ToArray();
+        return Task.FromResult("");
     }
 
-    public string TestInput => null;
+    public string? TestInput => null;
 }

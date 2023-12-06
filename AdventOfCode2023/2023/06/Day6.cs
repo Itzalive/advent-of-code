@@ -22,12 +22,14 @@ public class Day6 : IDay
             }
 
             var numWinners = possibleDistances.Count(d => d > distanceToBeat);
-            Console.WriteLine(numWinners);
+            //Console.WriteLine(numWinners);
             score *= numWinners;
         }
 
         return Task.FromResult(score.ToString());
     }
+
+    public string? Part1TestSolution => "288";
 
     public Task<string> Part2(string input)
     {
@@ -48,12 +50,14 @@ public class Day6 : IDay
                 }
             }
 
-            Console.WriteLine(numWinners);
+            //Console.WriteLine(numWinners);
             score *= numWinners;
         }
 
         return Task.FromResult(score.ToString());
     }
+
+    public string? Part2TestSolution => "71503";
 
     public string TestInput => @"Time:      7  15   30
 Distance:  9  40  200";

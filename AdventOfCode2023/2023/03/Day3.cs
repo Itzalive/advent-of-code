@@ -5,6 +5,8 @@ internal class Day3 : IDay
     public int Year => 2023;
     public int Day => 3;
 
+    public string? Part1TestSolution => "4361";
+
     public Task<string> Part1(string input)
     {
         var map = input.Split(Environment.NewLine);
@@ -96,6 +98,8 @@ internal class Day3 : IDay
     {
         return !char.IsNumber(c) && c != '.';
     }
+
+    public string? Part2TestSolution => "467835";
 
     public Task<string> Part2(string input)
     {

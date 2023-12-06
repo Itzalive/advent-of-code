@@ -6,6 +6,8 @@ public class Day17b : IDay
 
     public int Day => 117;
 
+    public string? Part1TestSolution => null;
+
     public Task<string> Part1(string input)
     {
         var inputs = input.ToCharArray();
@@ -290,6 +292,7 @@ public class Day17b : IDay
         return topOfTheRock + rock.Length;
     }
 
+    public string? Part2TestSolution => null;
 
     public Task<string> Part2(string input)
     {

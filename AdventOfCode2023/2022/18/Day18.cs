@@ -6,6 +6,8 @@ public class Day18 : IDay
 
     public int Day => 18;
 
+    public string? Part1TestSolution => null;
+
     public Task<string> Part1(string input)
     {
         var inputs = input.Split(Environment.NewLine).ToArray();
@@ -36,6 +38,7 @@ public class Day18 : IDay
         return Task.FromResult(count.ToString());
     }
 
+    public string? Part2TestSolution => null;
 
     public Task<string> Part2(string input)
     {

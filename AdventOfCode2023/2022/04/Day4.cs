@@ -5,6 +5,8 @@ internal class Day4 : IDay
     public int Year => 2022;
     public int Day => 4;
 
+    public string? Part1TestSolution => null;
+
     public async Task<string> Part1(string input)
     {
         var inputs = input.Split(Environment.NewLine).ToArray();
@@ -14,6 +16,8 @@ internal class Day4 : IDay
             .Count(a => a[0][0] <= a[1][0] && a[0][1] >= a[1][1] || a[0][0] >= a[1][0] && a[0][1] <= a[1][1])
             .ToString();
     }
+
+    public string? Part2TestSolution => null;
 
     public async Task<string> Part2(string input)
     {

@@ -48,6 +48,8 @@ internal class Day5 : IDay
         return Task.FromResult(currentNums.Min().ToString());
     }
 
+    public string? Part1TestSolution => "35";
+
     public Task<string> Part2(string input)
     {
         var blocks = input.Split(Environment.NewLine + Environment.NewLine);
@@ -85,6 +87,8 @@ internal class Day5 : IDay
 
         return Task.FromResult(minimum.ToString());
     }
+
+    public string? Part2TestSolution => "46";
 
     private class Map
     {

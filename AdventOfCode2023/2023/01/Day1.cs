@@ -1,12 +1,12 @@
-﻿using System.Globalization;
-
-namespace AdventOfCode2023._2023._01;
+﻿namespace AdventOfCode2023._2023._01;
 
 internal class Day1 : IDay
 {
     public int Year => 2023;
 
     public int Day => 1;
+
+    public string? Part1TestSolution => null;
 
     public Task<string> Part1(string input)
     {
@@ -15,6 +15,8 @@ internal class Day1 : IDay
         var calibrations = lineNumbers.Select(l => int.Parse($"{l.First()}{l.Last()}")).ToList();
         return Task.FromResult(calibrations.Sum().ToString());
     }
+
+    public string? Part2TestSolution => null;
 
     public Task<string> Part2(string input)
     {
