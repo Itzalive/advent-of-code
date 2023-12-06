@@ -153,6 +153,7 @@ public class Program
 
     private static async Task<string> LoadInputAsync(IDay day)
     {
+        Console.WriteLine($"Downloading input for {day.Year}-{day.Day:00}");
         var inputPath = $"../../../{day.Year}/{day.Day:00}/input.txt";
         return (await File.ReadAllTextAsync(inputPath)).Replace("\n", Environment.NewLine)
             .Replace("\r\r\n", Environment.NewLine).Trim('\r', '\n', ' ');
@@ -171,6 +172,17 @@ public class Program
 
     private static async Task SubmitAnswerAsync(IDay day, int part, string answer)
     {
+        var wrongAnswerPath = $"../../../{day.Year}/{day.Day:00}/{part}-bad.txt";
+        if (File.Exists(wrongAnswerPath))
+        {
+            var previousAnswers = (await File.ReadAllTextAsync(wrongAnswerPath)).Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
+            if (previousAnswers.Contains(answer))
+            {
+                Console.WriteLine("Already tried this answer and it was not correct!");
+                return;
+            }
+        }
+
         var formContent = new FormUrlEncodedContent(new[]
         {
             new KeyValuePair<string, string>("level", part.ToString()), 
@@ -195,6 +207,7 @@ public class Program
             if (notRightAnswer.Success)
             {
                 Console.WriteLine("Not the right answer");
+                await File.AppendAllTextAsync(wrongAnswerPath, answer + Environment.NewLine);
                 return;
             }
 
