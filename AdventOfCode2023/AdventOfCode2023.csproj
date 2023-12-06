@@ -9,12 +9,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="2016\**" />
     <Compile Remove="2020\**" />
     <Compile Remove="2021\**" />
     <Compile Remove="2022\**" />
+    <EmbeddedResource Remove="2016\**" />
     <EmbeddedResource Remove="2020\**" />
     <EmbeddedResource Remove="2021\**" />
     <EmbeddedResource Remove="2022\**" />
+    <None Remove="2016\**" />
     <None Remove="2020\**" />
     <None Remove="2021\**" />
     <None Remove="2022\**" />
