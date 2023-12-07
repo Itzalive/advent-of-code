@@ -2,7 +2,9 @@
 using System.Diagnostics;
 using System.Management;
 using System.Net;
+using System.Reflection;
 using System.Text.RegularExpressions;
+using Microsoft.Extensions.Configuration;
 
 namespace AdventOfCode2023;
 
@@ -13,11 +15,15 @@ public class Program
 
     static Program()
     {
+        var builder = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json", true, true)
+            .AddJsonFile("appsettings.Development.json", true, true)
+            .AddUserSecrets(Assembly.GetExecutingAssembly(), true);
+        var configuration = builder.Build();
         var cookieContainer = new CookieContainer();
         var baseAddress = new Uri($"https://adventofcode.com");
         cookieContainer.Add(baseAddress,
-            new Cookie("session",
-                "***REMOVED***"));
+            new Cookie("session", configuration["aocSessionToken"]));
         HttpHandler = new HttpClientHandler();
         HttpHandler.CookieContainer = cookieContainer;
         HttpClient = new HttpClient(HttpHandler) { BaseAddress = baseAddress };
