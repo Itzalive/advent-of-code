@@ -217,11 +217,13 @@ public class Program
                 return;
             }
 
-            var waitForSubmission = Regex.Match(content, "You have ([0-9]*)s left to wait");
+            var waitForSubmission = Regex.Match(content, "You have (([0-9]*)m )?([0-9]*)s left to wait");
             if (waitForSubmission.Success)
             {
-                Console.WriteLine($"Waiting to submit for {waitForSubmission.Groups[1].Value}s");
-                await Task.Delay(TimeSpan.FromSeconds(int.Parse(waitForSubmission.Groups[1].Value) + 1));
+                var mins = waitForSubmission.Groups[1].Success ? int.Parse(waitForSubmission.Groups[2].Value) : 0;
+                var seconds = int.Parse(waitForSubmission.Groups[3].Value);
+                Console.WriteLine($"Waiting to submit for {mins * 60 + seconds}s");
+                await Task.Delay(TimeSpan.FromSeconds(mins * 60 + seconds + 1));
                 await SubmitAnswerAsync(day, part, answer);
                 return;
             }
