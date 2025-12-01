@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace AdventOfCode2023._2024._7;
+﻿namespace AdventOfCode2023._2024._07;
 
 public class Day7 : IDay
 {
