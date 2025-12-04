@@ -11,20 +11,20 @@ internal class Day3 : IDay
     public Task<string> Part1(string input)
     {
         var inputs = input.Split(Environment.NewLine).Select(l => l.Select(c => int.Parse(c.ToString())).ToArray()).ToArray();
-        var score = 0;
+        var score = 0L;
         var numBatteries = 2;
         foreach (var bank in inputs)
         {
-            var joltage = 0;
+            var joltage = 0L;
             var lastBattery = -1;
             for (var i = 0; i < numBatteries; i++)
             {
                 joltage *= 10;
-                var battery = bank[(lastBattery + 1) .. (bank.Length - numBatteries + i)]
+                var battery = bank[(lastBattery + 1)..(bank.Length - numBatteries + i + 1)]
                     .Select((battery, index) => (Battery: battery, Index: index))
                     .GroupBy(x => x.Battery).MaxBy(x => x.Key).MinBy(x => x.Index);
                 joltage += battery.Battery;
-                lastBattery = battery.Index;
+                lastBattery += battery.Index + 1;
             }
 
             score += joltage;
