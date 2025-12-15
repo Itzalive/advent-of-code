@@ -162,7 +162,7 @@ public class Program
         Console.WriteLine($"Downloading input for {day.Year}-{day.Day:00}");
         var inputPath = $"../../../{day.Year}/{day.Day:00}/input.txt";
         return (await File.ReadAllTextAsync(inputPath)).Replace("\n", Environment.NewLine)
-            .Replace("\r\r\n", Environment.NewLine).Trim('\r', '\n', ' ');
+            .Replace("\r\r\n", Environment.NewLine).Trim('\r', '\n');
     }
 
     private static async Task EnsureInputLoadedAsync(IDay day)
